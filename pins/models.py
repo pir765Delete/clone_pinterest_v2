@@ -30,7 +30,7 @@ class Pin(models.Model):
     title = models.CharField(max_length=255)
     description = models.TextField(null=True, blank=True)
     topic = models.CharField(max_length=255, null=True, blank=True)
-    image: ImageField = models.ImageField(upload_to=user_directory_path, null=True, blank=True)
+    image = models.ImageField(upload_to=user_directory_path, null=True, blank=True)
 
     class Meta:
         verbose_name = 'Пост'
@@ -46,7 +46,7 @@ class Board(models.Model):
     pinner_id = models.ForeignKey(Pinner, on_delete=models.CASCADE, null=True, blank=True)
 
     class Meta:
-        verbose_name = 'Панель постов'
+        verbose_name_plural = 'Панель постов'
 
 
 # ----------------------non-functional block-----------------------#
