@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models import ImageField
 
 
 class Pinner(models.Model):
@@ -9,8 +10,17 @@ class Pinner(models.Model):
     login = models.CharField(max_length=255)
     password = models.CharField(max_length=255)
 
+    class Meta:
+        verbose_name = 'Пользователь'
+        verbose_name_plural = 'Пользователи'
+
     def __str__(self):
         return self.name
+
+
+def user_directory_path(instance, filename):
+    # file will be uploaded to MEDIA_ROOT/user_<name>/<filename>
+    return 'images/' + 'user_{0}/{1}'.format(instance.pinner_id, filename)
 
 
 class Pin(models.Model):
@@ -20,18 +30,14 @@ class Pin(models.Model):
     title = models.CharField(max_length=255)
     description = models.TextField(null=True, blank=True)
     topic = models.CharField(max_length=255, null=True, blank=True)
+    image: ImageField = models.ImageField(upload_to=user_directory_path, null=True, blank=True)
+
+    class Meta:
+        verbose_name = 'Пост'
+        verbose_name_plural = 'Посты'
 
     def __str__(self):
         return self.title
-
-
-class Image(models.Model):
-    # pictures in pin
-    id = models.IntegerField(primary_key=True)
-    url = models.CharField(max_length=255)
-
-    def __str__(self):
-        return self.url
 
 
 class Board(models.Model):
@@ -39,14 +45,12 @@ class Board(models.Model):
     id = models.IntegerField(primary_key=True)
     pinner_id = models.ForeignKey(Pinner, on_delete=models.CASCADE, null=True, blank=True)
 
+    class Meta:
+        verbose_name = 'Панель постов'
+
 
 # ----------------------non-functional block-----------------------#
 
 class Pin_in_board(models.Model):
     board_id = models.ForeignKey(Board, on_delete=models.CASCADE)
     pin_id = models.ForeignKey(Pin, on_delete=models.CASCADE)
-
-
-class Image_in_pin(models.Model):
-    pin_id = models.ForeignKey(Pin, on_delete=models.CASCADE)
-    image_id = models.ForeignKey(Image, on_delete=models.CASCADE)
